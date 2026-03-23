@@ -10,6 +10,9 @@ class PidginScrabble:
         self.root.title(f"FRANK'S PIDGIN BUILDER PRO - {self.player_name}")
         self.root.geometry("500x850")
         self.root.configure(bg="#1a1a1a")
+        
+        # This line forces the window to pop up in front of VS Code
+        self.root.attributes('-topmost', True)
 
         self.dictionary = [
             "CHOP", "SABI", "WAHALA", "KOLO", "JARA", "OYIBO", "WEY", "BASH", "PIKIN",
@@ -44,7 +47,6 @@ class PidginScrabble:
         self.submit_btn = tk.Button(root, text="SUBMIT WORD", command=self.check_word, bg="gold", font=("Arial", 12, "bold"), height=2, width=20)
         self.submit_btn.pack(pady=5)
 
-        # NEW SHUFFLE BUTTON
         self.shuffle_btn = tk.Button(root, text="SHUFFLE TILES", command=self.shuffle_tiles, bg="blue", fg="white", font=("Arial", 12, "bold"), height=2, width=20)
         self.shuffle_btn.pack(pady=5)
 
@@ -57,7 +59,6 @@ class PidginScrabble:
         self.next_round()
 
     def play_sound(self):
-        # Plays Mac system sound
         os.system('afplay /System/Library/Sounds/Ping.aiff &')
 
     def next_round(self):
@@ -103,40 +104,4 @@ class PidginScrabble:
             self.play_sound()
             self.score += 10
             self.score_label.config(text=f"POINTS: {self.score}")
-            messagebox.showinfo("Correct!", f"Correct! {self.target_word}")
-            self.next_round()
-        else:
-            self.wrong_answer()
-
-    def wrong_answer(self):
-        self.lives -= 1
-        self.lives_label.config(text="❤️" * self.lives)
-        if self.lives <= 0:
-            self.update_leaderboard()
-            self.score = 0
-            self.lives = 3
-            self.score_label.config(text="POINTS: 0")
-            self.lives_label.config(text="❤️❤️❤️")
-            self.next_round()
-        else:
-            messagebox.showerror("Wrong", "Try again!")
-
-    def get_leaderboard_text(self):
-        try:
-            with open("leaderboard.txt", "r") as f:
-                content = f.read().strip()
-                return f"TOP SCORE: {content}"
-        except:
-            return "NO HIGH SCORE YET"
-
-    def update_leaderboard(self):
-        current_top = 0
-        try:
-            with open("leaderboard.txt", "r") as f:
-                current_top = int(f.read().split("by")[0].strip())
-        except:
-            pass
-
-        if self.score > current_top:
-            with open("leaderboard.txt", "w") as f:
-                f.write(f"{self.score} by {self.player_name}")
+            messagebox.showinfo("Correct!", f"Correct!
