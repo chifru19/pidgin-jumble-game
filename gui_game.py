@@ -11,7 +11,7 @@ class PidginScrabble:
         self.root.geometry("500x850")
         self.root.configure(bg="#1a1a1a")
         
-        # This line forces the window to pop up in front of VS Code
+        # Ensures the window pops up in front of VS Code on Mac
         self.root.attributes('-topmost', True)
 
         self.dictionary = [
@@ -104,4 +104,60 @@ class PidginScrabble:
             self.play_sound()
             self.score += 10
             self.score_label.config(text=f"POINTS: {self.score}")
-            messagebox.showinfo("Correct!", f"Correct!
+            messagebox.showinfo("Correct!", f"Correct! {self.target_word}")
+            self.next_round()
+        else:
+            self.wrong_answer()
+
+    def wrong_answer(self):
+        self.lives -= 1
+        self.lives_label.config(text="❤️" * self.lives)
+        if self.lives <= 0:
+            self.update_leaderboard()
+            self.score = 0
+            self.lives = 3
+            self.score_label.config(text="POINTS: 0")
+            self.lives_label.config(text="❤️❤️❤️")
+            self.next_round()
+        else:
+            messagebox.showerror("Wrong", "Try again!")
+
+    def get_leaderboard_text(self):
+        try:
+            if os.path.exists("leaderboard.txt"):
+                with open("leaderboard.txt", "r") as f:
+                    content = f.read().strip()
+                    return f"TOP SCORE: {content}"
+        except:
+            pass
+        return "NO HIGH SCORE YET"
+
+    def update_leaderboard(self):
+        current_top = 0
+        try:
+            if os.path.exists("leaderboard.txt"):
+                with open("leaderboard.txt", "r") as f:
+                    data = f.read().split(" by ")
+                    current_top = int(data[0])
+        except:
+            pass
+
+        if self.score > current_top:
+            with open("leaderboard.txt", "w") as f:
+                f.write(f"{self.score} by {self.player_name}")
+            messagebox.showinfo("New Record!", f"Legendary! {self.score} is the new high score!")
+        else:
+            messagebox.showinfo("Game Over", f"Final Score: {self.score}\nWord was: {self.target_word}")
+        
+        self.high_score_label.config(text=self.get_leaderboard_text())
+
+# --- RUN ENGINE ---
+if __name__ == "__main__":
+    root = tk.Tk()
+    root.withdraw()
+    name = simpledialog.askstring("Welcome", "Enter your name to play:")
+    if not name:
+        name = "Guest"
+    root.deiconify()
+    game = PidginScrabble(root, name)
+    root.mainloop()
