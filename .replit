@@ -1,13 +1,5 @@
 run = "python gui_game.py"
-
-[modules]
-modules = ["python-3.10"]
+entrypoint = "gui_game.py"
 
 [nix]
 channel = "stable-23_11"
-
-[packager]
-PKGS = ["python310Packages.tkinter", "xorg.xauth", "libX11", "tk"]
-
-[interpreter]
-command = ["python3"]
