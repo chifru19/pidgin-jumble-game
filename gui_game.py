@@ -11,7 +11,7 @@ class PidginScrabble:
         self.root.geometry("500x850")
         self.root.configure(bg="#1a1a1a")
         
-        # Ensures the window pops up in front of VS Code on Mac
+        # Ensures window stays in front on Mac
         self.root.attributes('-topmost', True)
 
         self.dictionary = [
@@ -44,13 +44,14 @@ class PidginScrabble:
         self.word_entry.focus_set()
         self.word_entry.bind("<Return>", lambda event: self.check_word())
 
-        self.submit_btn = tk.Button(root, text="SUBMIT WORD", command=self.check_word, bg="gold", font=("Arial", 12, "bold"), height=2, width=20)
+        self.submit_btn = tk.Button(root, text="SUBMIT WORD", command=self.check_word, bg="white", fg="black", font=("Arial", 12, "bold"), height=2, width=20)
         self.submit_btn.pack(pady=5)
 
         self.shuffle_btn = tk.Button(root, text="SHUFFLE TILES", command=self.shuffle_tiles, bg="blue", fg="white", font=("Arial", 12, "bold"), height=2, width=20)
         self.shuffle_btn.pack(pady=5)
 
-        self.hint_btn = tk.Button(root, text="GET HINT (-5 PTS)", command=self.give_hint, bg="red", fg="white", font=("Arial", 12, "bold"), height=2, width=20)
+        # Hint button starts dimmed
+        self.hint_btn = tk.Button(root, text="GET HINT (-5 PTS)", command=self.give_hint, bg="gray", fg="white", font=("Arial", 12, "bold"), height=2, width=20)
         self.hint_btn.pack(pady=5)
 
         self.high_score_label = tk.Label(root, text=self.get_leaderboard_text(), fg="cyan", bg="#1a1a1a", font=("Arial", 10, "italic"))
@@ -59,7 +60,13 @@ class PidginScrabble:
         self.next_round()
 
     def play_sound(self):
-        os.system('afplay /System/Library/Sounds/Ping.aiff &')
+        """Universal sound: Works on Mac and Replit/Linux"""
+        try:
+            # Try Mac sound first
+            os.system('afplay /System/Library/Sounds/Ping.aiff &')
+        except:
+            # Fallback for Replit/Linux: Standard system beep
+            print('\a')
 
     def next_round(self):
         self.target_word = random.choice(self.dictionary)
@@ -82,19 +89,18 @@ class PidginScrabble:
             lbl.pack(side="left", padx=5)
 
     def shuffle_tiles(self):
+        self.shuffle_btn.config(bg="lightblue")
         random.shuffle(self.current_letters)
         self.refresh_tiles()
+        self.root.after(200, lambda: self.shuffle_btn.config(bg="blue"))
 
     def give_hint(self):
-        if self.score == 0:
-            messagebox.showinfo("First Hint Free", f"Starts with: {self.target_word[0]}")
-            return
         if self.score >= 5:
             self.score -= 5
-            self.score_label.config(text=f"POINTS: {self.score}")
-            messagebox.showinfo("Hint", f"Starts with: {self.target_word[0]}")
+            self.update_ui()
+            messagebox.showinfo("Hint", f"The word starts with: {self.target_word[0]}")
         else:
-            messagebox.showwarning("No Points", "Oga, get 5 points first!")
+            messagebox.showwarning("No Points", "Score 5 points first to unlock hints!")
 
     def check_word(self):
         user_word = self.word_entry.get().upper().strip()
@@ -103,11 +109,19 @@ class PidginScrabble:
         if user_word == self.target_word:
             self.play_sound()
             self.score += 10
-            self.score_label.config(text=f"POINTS: {self.score}")
-            messagebox.showinfo("Correct!", f"Correct! {self.target_word}")
+            self.update_ui()
+            messagebox.showinfo("Correct!", f"Well done! {self.target_word}")
             self.next_round()
         else:
             self.wrong_answer()
+
+    def update_ui(self):
+        self.score_label.config(text=f"POINTS: {self.score}")
+        # Make hint button green if usable
+        if self.score >= 5:
+            self.hint_btn.config(bg="green", fg="white")
+        else:
+            self.hint_btn.config(bg="gray")
 
     def wrong_answer(self):
         self.lives -= 1
@@ -116,18 +130,17 @@ class PidginScrabble:
             self.update_leaderboard()
             self.score = 0
             self.lives = 3
-            self.score_label.config(text="POINTS: 0")
+            self.update_ui()
             self.lives_label.config(text="❤️❤️❤️")
             self.next_round()
         else:
-            messagebox.showerror("Wrong", "Try again!")
+            messagebox.showerror("Wrong", "Keep trying!")
 
     def get_leaderboard_text(self):
         try:
             if os.path.exists("leaderboard.txt"):
                 with open("leaderboard.txt", "r") as f:
-                    content = f.read().strip()
-                    return f"TOP SCORE: {content}"
+                    return f"TOP SCORE: {f.read().strip()}"
         except:
             pass
         return "NO HIGH SCORE YET"
@@ -151,13 +164,11 @@ class PidginScrabble:
         
         self.high_score_label.config(text=self.get_leaderboard_text())
 
-# --- RUN ENGINE ---
 if __name__ == "__main__":
     root = tk.Tk()
     root.withdraw()
     name = simpledialog.askstring("Welcome", "Enter your name to play:")
-    if not name:
-        name = "Guest"
+    player = name if name else "Guest"
     root.deiconify()
-    game = PidginScrabble(root, name)
+    game = PidginScrabble(root, player)
     root.mainloop()
