@@ -4,11 +4,12 @@ import random
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("green") 
 
-# A list of valid Pidgin words the game recognizes
+# Expanded list of valid Pidgin words for the "Builder" logic
 VALID_PIDGIN_WORDS = [
     "pikin", "sabi", "motto", "boku", "kakaki", "overtake", 
     "wakabout", "bellefull", "confam", "expensiv", "ogbonge", 
-    "kpatakpata", "oya", "chop", "muna", "una", "shayo"
+    "kpatakpata", "oya", "chop", "muna", "una", "shayo",
+    "garri", "akara", "palava", "obokun", "lamba", "jolly"
 ]
 
 class PidginScrabbleApp(ctk.CTk):
@@ -66,7 +67,7 @@ class PidginScrabbleApp(ctk.CTk):
     def generate_hand(self):
         vowels = "AEIOU"
         consonants = "BCDFGHJKLMNPQRSTVWXYZ"
-        # Always give at least 3 vowels and 4 consonants for fairness
+        # 3 Vowels and 4 Consonants to make word building easier
         hand = [random.choice(vowels) for _ in range(3)] + [random.choice(consonants) for _ in range(4)]
         random.shuffle(hand)
         return hand
@@ -97,12 +98,15 @@ class PidginScrabbleApp(ctk.CTk):
     def check_word(self):
         user_word = self.entry_word.get().lower().strip()
         
-        # 1. Check if word is in our dictionary
-        if user_word not in VALID_PIDGIN_WORDS:
-            self.label_feedback.configure(text=f"'{user_word}' is not a Pidgin word!", text_color="orange")
+        if not user_word:
             return
 
-        # 2. Check if letters are available in the hand
+        # Check if word is in our dictionary
+        if user_word not in VALID_PIDGIN_WORDS:
+            self.label_feedback.configure(text=f"'{user_word}' is not in the dictionary!", text_color="orange")
+            return
+
+        # Check if letters are available in the hand
         temp_hand = [letter.lower() for letter in self.current_hand]
         can_build = True
         for char in user_word:
@@ -113,13 +117,13 @@ class PidginScrabbleApp(ctk.CTk):
                 break
         
         if can_build:
-            points = len(user_word) * 5
+            points = len(user_word) * 10
             self.score += points
             self.label_feedback.configure(text=f"Correct! +{points} points", text_color="#00FF00")
             
             # Rank Up Logic
-            if self.score > 50: self.current_rank_idx = 1
-            if self.score > 150: self.current_rank_idx = 2
+            if self.score >= 100: self.current_rank_idx = 1
+            if self.score >= 300: self.current_rank_idx = 2
             
             self.next_round()
         else:
@@ -128,5 +132,4 @@ class PidginScrabbleApp(ctk.CTk):
         self.update_ui()
 
     def update_ui(self):
-        self.label_rank.configure(text=f"RANK: {self.level_names[self.current_rank_idx]}")
-        self.label_stats.configure(text=f"Score: {self.score}  |  Lives:
+        self.label_rank.configure(text=f"RANK
