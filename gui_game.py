@@ -33,6 +33,7 @@ class PidginScrabble:
 
         self.word_entry = tk.Entry(root, font=("Arial", 18), justify='center', bg="#333", fg="white", insertbackground="white")
         self.word_entry.pack(pady=10)
+        self.word_entry.focus_set() 
         self.word_entry.bind("<Return>", lambda event: self.check_word())
 
         self.submit_btn = tk.Button(root, text="SUBMIT", command=self.check_word, bg="gold", font=("Arial", 14, "bold"), width=15)
@@ -49,9 +50,9 @@ class PidginScrabble:
 
         self.target_word = random.choice(self.dictionary) 
         
-        # Logic Fix: Ensure every letter of the word is turned into a tile
+        # Ensures enough letters for double-letter words like KOLO or BELLE
         word_letters = list(self.target_word)
-        extra = random.choices("ABCDEFGHIJKLMNOPQRSTUVWXYZ", k=2)
+        extra = random.choices("ABCDEFGHIJKLMNOPQRSTUVWXYZ", k=3)
         
         self.current_letters = word_letters + extra
         random.shuffle(self.current_letters)
@@ -59,7 +60,7 @@ class PidginScrabble:
         for letter in self.current_letters:
             lbl = tk.Label(self.letter_frame, text=letter, font=("Arial", 20, "bold"),
                           width=2, relief="raised", bg="gold", fg="black")
-            lbl.pack(side="left", padx=10)
+            lbl.pack(side="left", padx=5)
 
     def give_hint(self):
         if self.score >= 5:
@@ -74,7 +75,6 @@ class PidginScrabble:
         self.word_entry.delete(0, tk.END)
 
         if user_word in self.dictionary:
-            # Check if user actually used the available tiles
             temp_letters = self.current_letters.copy()
             can_form = True
             for char in user_word:
@@ -89,4 +89,24 @@ class PidginScrabble:
                 self.score_label.config(text=f"POINTS: {self.score}")
                 self.next_round()
             else:
-                self.wrong_answer
+                self.wrong_answer()
+        else:
+            self.wrong_answer()
+
+    def wrong_answer(self):
+        self.lives -= 1
+        self.lives_label.config(text="❤️" * self.lives)
+        if self.lives <= 0:
+            messagebox.showinfo("Game Over", f"Final Score: {self.score}")
+            self.score = 0
+            self.lives = 3
+            self.score_label.config(text="POINTS: 0")
+            self.lives_label.config(text="❤️❤️❤️")
+        else:
+            messagebox.showerror("Wrong", "Try again!")
+
+# THE ENGINE: These lines must have NO spaces at the beginning
+if __name__ == "__main__":
+    root = tk.Tk()
+    game = PidginScrabble(root)
+    root.mainloop()
