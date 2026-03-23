@@ -1,0 +1,21 @@
+# 1. The command to run your GUI file
+run = "python3 gui_game.py"
+
+# 2. Tell Replit to use a Graphical (VNC) window
+[modules]
+python = "python-3.10"
+
+[nix]
+channel = "stable-23_11"
+
+# 3. These packages are needed to make "customtkinter" and "tkinter" show up on the web
+[packager]
+PKGS = [
+    "python310Packages.tkinter",
+    "xorg.xauth",
+    "libX11",
+    "tk"
+]
+
+[interpreter]
+command = ["python3"]
