@@ -8,7 +8,13 @@ class PidginScrabble:
         self.root.title("FRANK'S PIDGIN BUILDER PRO")
         self.root.geometry("500x700")
         self.root.configure(bg="#1a1a1a")
-        self.dictionary = ["CHOP", "SABI", "WAHALA", "KOLO", "JARA", "OYIBO", "WEY", "BASH", "PIKIN", "VEX"]
+        self.dictionary = [
+            "CHOP", "SABI", "WAHALA", "KOLO", "JARA", "OYIBO", "WEY", "BASH", "PIKIN",
+            "ABI", "BAFFS", "BELLE", "BLESS", "BOKU", "BONANZA", "COMOT", "DASH", "DON",
+            "DONE", "FAYA", "FINI", "GBANA", "JOLLY", "KEKE", "KPAKO", "KPAI", "KULI",
+            "MAGUN", "MUMU", "NAWA", "OBODO", "OKADA", "PADI", "SHAYO", "TIWA", "UNAH",
+            "VAMOOSE", "WETIN", "YAPPA", "ZANGA"
+        ]
         self.score, self.lives = 0, 3
         self.current_letters = []
         self.score_label = tk.Label(root, text="SCORE: 0", fg="gold", bg="#1a1a1a", font=("Arial", 24, "bold"))
