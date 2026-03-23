@@ -1,12 +1,14 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, simpledialog
 import random
+import os
 
 class PidginScrabble:
-    def __init__(self, root):
+    def __init__(self, root, player_name):
         self.root = root
-        self.root.title("FRANK'S PIDGIN BUILDER PRO")
-        self.root.geometry("500x750")
+        self.player_name = player_name
+        self.root.title(f"FRANK'S PIDGIN BUILDER PRO - {self.player_name}")
+        self.root.geometry("500x850")
         self.root.configure(bg="#1a1a1a")
 
         self.dictionary = [
@@ -18,78 +20,91 @@ class PidginScrabble:
         ]
 
         self.score, self.lives = 0, 3
+        self.target_word = ""
         self.current_letters = []
-        self.target_word = "" 
 
         # UI Elements
         self.score_label = tk.Label(root, text="POINTS: 0", fg="gold", bg="#1a1a1a", font=("Arial", 24, "bold"))
-        self.score_label.pack(pady=20)
+        self.score_label.pack(pady=10)
 
         self.lives_label = tk.Label(root, text="❤️❤️❤️", fg="red", bg="#1a1a1a", font=("Arial", 18))
         self.lives_label.pack()
+
+        self.info_label = tk.Label(root, text="Loading...", fg="white", bg="#1a1a1a", font=("Arial", 14))
+        self.info_label.pack(pady=5)
 
         self.letter_frame = tk.Frame(root, bg="#1a1a1a")
         self.letter_frame.pack(pady=20)
 
         self.word_entry = tk.Entry(root, font=("Arial", 18), justify='center', bg="#333", fg="white", insertbackground="white")
         self.word_entry.pack(pady=10)
-        self.word_entry.focus_set() 
+        self.word_entry.focus_set()
         self.word_entry.bind("<Return>", lambda event: self.check_word())
 
-        self.submit_btn = tk.Button(root, text="SUBMIT", command=self.check_word, bg="gold", font=("Arial", 14, "bold"), width=15)
-        self.submit_btn.pack(pady=10)
+        self.submit_btn = tk.Button(root, text="SUBMIT WORD", command=self.check_word, bg="gold", font=("Arial", 12, "bold"), height=2, width=20)
+        self.submit_btn.pack(pady=5)
 
-        self.hint_btn = tk.Button(root, text="GET HINT (-5 PTS)", command=self.give_hint, bg="#444", fg="white", font=("Arial", 10), width=15)
+        # NEW SHUFFLE BUTTON
+        self.shuffle_btn = tk.Button(root, text="SHUFFLE TILES", command=self.shuffle_tiles, bg="blue", fg="white", font=("Arial", 12, "bold"), height=2, width=20)
+        self.shuffle_btn.pack(pady=5)
+
+        self.hint_btn = tk.Button(root, text="GET HINT (-5 PTS)", command=self.give_hint, bg="red", fg="white", font=("Arial", 12, "bold"), height=2, width=20)
         self.hint_btn.pack(pady=5)
+
+        self.high_score_label = tk.Label(root, text=self.get_leaderboard_text(), fg="cyan", bg="#1a1a1a", font=("Arial", 10, "italic"))
+        self.high_score_label.pack(side="bottom", pady=20)
 
         self.next_round()
 
+    def play_sound(self):
+        # Plays Mac system sound
+        os.system('afplay /System/Library/Sounds/Ping.aiff &')
+
     def next_round(self):
+        self.target_word = random.choice(self.dictionary)
+        self.info_label.config(text=f"The word has {len(self.target_word)} letters!")
+        
+        display_letters = list(self.target_word)
+        while len(display_letters) < 8:
+            display_letters.append(random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ"))
+        
+        random.shuffle(display_letters)
+        self.current_letters = display_letters
+        self.refresh_tiles()
+
+    def refresh_tiles(self):
         for widget in self.letter_frame.winfo_children():
             widget.destroy()
-
-        self.target_word = random.choice(self.dictionary) 
-        
-        # Ensures enough letters for double-letter words like KOLO or BELLE
-        word_letters = list(self.target_word)
-        extra = random.choices("ABCDEFGHIJKLMNOPQRSTUVWXYZ", k=3)
-        
-        self.current_letters = word_letters + extra
-        random.shuffle(self.current_letters)
-
         for letter in self.current_letters:
             lbl = tk.Label(self.letter_frame, text=letter, font=("Arial", 20, "bold"),
                           width=2, relief="raised", bg="gold", fg="black")
             lbl.pack(side="left", padx=5)
 
+    def shuffle_tiles(self):
+        random.shuffle(self.current_letters)
+        self.refresh_tiles()
+
     def give_hint(self):
+        if self.score == 0:
+            messagebox.showinfo("First Hint Free", f"Starts with: {self.target_word[0]}")
+            return
         if self.score >= 5:
             self.score -= 5
             self.score_label.config(text=f"POINTS: {self.score}")
-            messagebox.showinfo("Hint", f"The word starts with: {self.target_word[0]}")
+            messagebox.showinfo("Hint", f"Starts with: {self.target_word[0]}")
         else:
-            messagebox.showwarning("No Points", "Oga, you no get enough points for hint!")
+            messagebox.showwarning("No Points", "Oga, get 5 points first!")
 
     def check_word(self):
         user_word = self.word_entry.get().upper().strip()
         self.word_entry.delete(0, tk.END)
 
-        if user_word in self.dictionary:
-            temp_letters = self.current_letters.copy()
-            can_form = True
-            for char in user_word:
-                if char in temp_letters:
-                    temp_letters.remove(char)
-                else:
-                    can_form = False
-                    break
-            
-            if can_form:
-                self.score += 10
-                self.score_label.config(text=f"POINTS: {self.score}")
-                self.next_round()
-            else:
-                self.wrong_answer()
+        if user_word == self.target_word:
+            self.play_sound()
+            self.score += 10
+            self.score_label.config(text=f"POINTS: {self.score}")
+            messagebox.showinfo("Correct!", f"Correct! {self.target_word}")
+            self.next_round()
         else:
             self.wrong_answer()
 
@@ -97,16 +112,31 @@ class PidginScrabble:
         self.lives -= 1
         self.lives_label.config(text="❤️" * self.lives)
         if self.lives <= 0:
-            messagebox.showinfo("Game Over", f"Final Score: {self.score}")
+            self.update_leaderboard()
             self.score = 0
             self.lives = 3
             self.score_label.config(text="POINTS: 0")
             self.lives_label.config(text="❤️❤️❤️")
+            self.next_round()
         else:
             messagebox.showerror("Wrong", "Try again!")
 
-# THE ENGINE: These lines must have NO spaces at the beginning
-if __name__ == "__main__":
-    root = tk.Tk()
-    game = PidginScrabble(root)
-    root.mainloop()
+    def get_leaderboard_text(self):
+        try:
+            with open("leaderboard.txt", "r") as f:
+                content = f.read().strip()
+                return f"TOP SCORE: {content}"
+        except:
+            return "NO HIGH SCORE YET"
+
+    def update_leaderboard(self):
+        current_top = 0
+        try:
+            with open("leaderboard.txt", "r") as f:
+                current_top = int(f.read().split("by")[0].strip())
+        except:
+            pass
+
+        if self.score > current_top:
+            with open("leaderboard.txt", "w") as f:
+                f.write(f"{self.score} by {self.player_name}")
