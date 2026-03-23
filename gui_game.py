@@ -9,11 +9,15 @@ class PidginScrabble:
         self.root.geometry("500x700")
         self.root.configure(bg="#1a1a1a")
 
+        # 1. MASTER DICTIONARY
         self.dictionary = ["CHOP", "SABI", "WAHALA", "KOLO", "JARA", "OYIBO", "WEY", "BASH", "PIKIN", "VEX"]
+        
+        # 2. STATE
         self.score = 0
         self.lives = 3
         self.current_letters = []
 
+        # 3. UI ELEMENTS
         self.score_label = tk.Label(root, text="SCORE: 0", fg="gold", bg="#1a1a1a", font=("Arial", 24, "bold"))
         self.score_label.pack(pady=20)
 
@@ -33,6 +37,7 @@ class PidginScrabble:
         self.refresh_rack()
 
     def refresh_rack(self):
+        """Generates 7 random letters"""
         for widget in self.rack_frame.winfo_children():
             widget.destroy()
         vowels = "AEIOU"
@@ -46,7 +51,7 @@ class PidginScrabble:
         word = self.word_entry.get().upper().strip()
         if not word: return
         
-        # Scrabble logic to check letters
+        # SCRABBLE LOGIC: Check letters
         temp_rack = self.current_letters.copy()
         valid_letters = True
         for char in word:
@@ -73,6 +78,7 @@ class PidginScrabble:
                 self.lives_label.config(text="❤️❤️❤️")
                 self.refresh_rack()
 
+# --- THIS IS THE PART YOU ASKED ABOUT ---
 if __name__ == "__main__":
     root = tk.Tk()
     app = PidginScrabble(root)
