@@ -1,7 +1,7 @@
 run = "python gui_game.py"
 
 [modules]
-python = ["python-3.10"]
+modules = ["python-3.10"]
 
 [nix]
 channel = "stable-23_11"
