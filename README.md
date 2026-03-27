@@ -7,8 +7,10 @@ A high-energy Word Scramble game built with **Python** and **Tkinter**, celebrat
 ---
 
 ## 🚀 Quick Start (Play Now)
-No installation needed! You can view the code and play the live version directly on Replit:  
-👉 **[Live Demo on Replit](https://replit.com/@chifru19/pidgin-jumble-game-5?v=1)**
+
+No installation needed! You can view the code and play the live version directly on Replit:
+
+👉 **[CLICK HERE TO PLAY: Live Demo on Replit](https://replit.com/@chifru19/pidgin-jumble-game-5?v=1)** 👈
 
 ---
 
