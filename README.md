@@ -8,7 +8,7 @@ A high-energy Word Scramble game built with **Python** and **Tkinter**, celebrat
 
 ## 🚀 Quick Start (Play Now)
 No installation needed! Play the live version directly in your browser:
-👉 [Live Demo on Replit](https://pidgin-jumble-game-5.chifru19.replit.app/)
+👉 [Live Demo on Replit](https://replit.com/@chifru19/pidgin-jumble-game-5)
 
 ## 💻 Local Setup
 1. **Clone:** `git clone https://github.com/chifru19/pidgin-jumble-game.git`
