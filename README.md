@@ -1,5 +1,23 @@
-🎮 FRANK'S PIDGIN BUILDER PROA high-energy Word Scramble game built with Python and Tkinter, featuring 100% Pidgin English vocabulary. Test your "sabi" levels and climb the leaderboard!✨ FeaturesAuthentic Vocabulary: Words like WAHALA, OYIBO, CHOP, and KPAKO.Lives System: You start with 3 hearts. One wrong move and you lose a life!Dynamic Hints: Spend 5 points to get the first letter of a difficult word.Visual Feedback: Arcade-style red screen flashes for wrong answers.Local Leaderboard: Persistent scoring saved to leaderboard.txt.Shuffle Mechanic: Re-order tiles to see the letters from a new perspective.🛠️ Tech StackLanguage: Python 3.xGUI Library: TkinterAudio Engine: Pygame (for immersive sound effects)Deployment: Replit / GitHub🚀 Quick Start (Play Now)No installation needed! Play the live version directly in your browser:👉 Live Demo on Replit💻 Installation & Setup (Local)1. Clone the RepoBashgit clone https://github.com/chifru19/pidgin-jumble-game.git
-cd pidgin-jumble-game
-2. Install DependenciesMake sure you have Python installed, then install the required libraries:Bashpip install pygame pillow
-3. Run the GameBashpython gui_game.py
-📸 Gameplay PreviewActionDescriptionCHOP AMSubmit your answer.SHUFFLERandomize the letter tiles.HELP ME SMALLDeduct 5 points for a hint.🤝 ContributingContributions are welcome! If you want to add more Pidgin words or improve the UI:Fork the Project.Create your Feature Branch (git checkout -b feature/AmazingFeature).Commit your Changes (git commit -m 'Add some AmazingFeature').Push to the Branch (git push origin feature/AmazingFeature).Open a Pull Request.👨‍💻 Developed byFrank (chifru19) Connecting culture with code.
+# 🎮 FRANK'S PIDGIN BUILDER PRO
+
+![Game Over Screen](./Game%20don%20finish.png)
+
+A high-energy Word Scramble game built with **Python** and **Tkinter**, celebrating Pidgin culture across Africa! 🇨🇲 🇳🇬 🇸🇱 🇱🇷
+
+---
+
+## 🚀 Quick Start (Play Now)
+No installation needed! Play the live version directly in your browser:
+👉 [Live Demo on Replit](https://pidgin-jumble-game-5.chifru19.replit.app/)
+
+## 💻 Local Setup
+1. **Clone:** `git clone https://github.com/chifru19/pidgin-jumble-game.git`
+2. **Install:** `pip install pygame pillow`
+3. **Run:** `python gui_game.py`
+
+---
+
+## ✨ Features
+* **Authentic Vocabulary:** Words like *WAHALA*, *OYIBO*, *CHOP*, and *KPAKO*.
+* **Lives System:** 3 hearts—don't lose them!
+* **Dynamic Hints:** Spend 5 points for a "Help Me Small" hint.
