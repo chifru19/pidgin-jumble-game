@@ -2,6 +2,10 @@ import tkinter as tk
 from tkinter import messagebox, simpledialog
 import random
 import os
+import pygame  # For de beta sounds
+
+# Initialize pygame mixer for audio
+pygame.mixer.init()
 
 class PidginScrabble:
     def __init__(self, root, player_name):
@@ -71,8 +75,6 @@ class PidginScrabble:
     def next_round(self):
         self.target_word = random.choice(self.dictionary)
         self.hint_display.config(text="") 
-        
-        # Updated Instruction
         self.info_label.config(text=f"DIS WORD GET {len(self.target_word)} LETTERS")
         
         display_letters = list(self.target_word)
@@ -114,6 +116,11 @@ class PidginScrabble:
         self.word_entry.delete(0, tk.END)
         if user_word == self.target_word:
             self.score += 10
+            # Play success sound
+            try:
+                pygame.mixer.Sound("success.wav").play()
+            except:
+                pass
             self.update_ui()
             messagebox.showinfo("✅ Correct", "Correct! You be pro!")
             self.next_round()
@@ -129,12 +136,16 @@ class PidginScrabble:
 
     def wrong_answer(self):
         self.lives -= 1
+        # Play error sound
+        try:
+            pygame.mixer.Sound("wrong.wav").play()
+        except:
+            pass
         self.lives_label.config(text="❤️" * self.lives)
         self.root.configure(bg="#660000")
         self.root.after(150, lambda: self.root.configure(bg="#1a1a1a"))
         
         if self.lives <= 0:
-            # PIDGIN GAME OVER
             messagebox.showinfo("Game Over", f"E DON FINISH! De word na: {self.target_word}")
             self.update_leaderboard()
             self.score, self.lives = 0, 3
@@ -157,20 +168,10 @@ class PidginScrabble:
         if os.path.exists("leaderboard.txt"):
             try:
                 with open("leaderboard.txt", "r") as f:
-                    data = f.read().split(" by ")
-                    current_top = int(data[0])
-            except: pass
-        if self.score > current_top:
-            with open("leaderboard.txt", "w") as f:
-                f.write(f"{self.score} by {self.player_name}")
-            messagebox.showinfo("🏆 Record!", f"New High Score: {self.score}!")
-        self.high_score_label.config(text=self.get_leaderboard_text())
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    root.withdraw()
-    name = simpledialog.askstring("Login", "Who go play?")
-    player = name if name and name.strip() else "Guest"
-    root.deiconify()
-    game = PidginScrabble(root, player)
-    root.mainloop()
+                    content = f.read().strip()
+                    if content:
+                        data = content.split(" by ")
+                        current_top = int(data[0])
+            except (ValueError, IndexError, FileNotFoundError):
+                current_top = 0  # Falls back to 0 if file is messy
+        return current_top
