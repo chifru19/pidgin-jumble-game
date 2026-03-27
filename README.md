@@ -35,14 +35,3 @@ No installation needed! You can view the code and play the live version directly
 ```bash
 git clone [https://github.com/chifru19/pidgin-jumble-game.git](https://github.com/chifru19/pidgin-jumble-game.git)
 cd pidgin-jumble-game
-2. Install Dependencies
-Bash
-pip install pygame pillow
-3. Run the Game
-Bash
-python gui_game.py
-🤝 Contributing
-Contributions are welcome! Whether you speak Kamtok, Naija Pidgin, or Krio, feel free to fork the project and help expand our dictionary.
-
-👨‍💻 Developed by
-Frank (chifru19) - Connecting Pan-African culture with modern code.
